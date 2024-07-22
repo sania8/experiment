@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My experiment</title>
+  <script src="https://unpkg.com/jspsych@8.0.0"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2.0.0"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-preload@2.0.0"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-video-button-response@2.0.0"></script>
+  <link href="https://unpkg.com/jspsych@8.0.0/css/jspsych.css" rel="stylesheet" type="text/css" />
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      background-color: lightpink;
+      overflow: hidden; /* Prevent scroll bars */
+    }
+
+
+    .custom-video-container {
+      display: flex;
+      flex-direction: row; /* Arrange video and buttons side by side */
+      align-items: flex-start; /* Align items at the top */
+      width: 100%;
+      position: relative;
+    }
+
+    .video-container {
+      flex: 1; /* Allow video to take available space */
+      margin-right: 20px; /* Space between video and buttons */
+    }
+
+    .button-container {
+      display: flex;
+      flex-direction: column; /* Arrange buttons vertically */
+      width: 150px; /* Adjust width as needed */
+      position: absolute;
+      top: 0; /* Align to the top of the container */
+    }
+
+    .jspsych-btn {
+      color: indigo;
+      background-color: rgb(166, 247, 251);
+      border-color: black;
+      font-weight: bold;
+      font-size: 12px;
+    }
+
+    ol {
+      list-style: none; /* Remove default list styling */
+      padding: 0; /* Remove default padding */
+      margin: 0; /* Remove default margin */
+    }
+
+    ol li {
+      position: relative; /* Positioning for pseudo-element */
+      margin-bottom: 10px; /* Adjust vertical spacing between list items */
+      padding-left: 50px; /* Space for the custom number */
+      background-color: #f8d7da; /* Same background color as body */
+      border-radius: 5px; /* Optional: Add rounded corners */
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Optional: Add subtle shadow */
+    }
+
+    ol li::before {
+      content: counter(list-item) ". "; /* Add list number */
+      position: absolute; /* Position the number absolutely */
+      left: 10px; /* Position it 10px from the left of the list item */
+      top: 50%; /* Align vertically in the middle */
+      transform: translateY(-50%); /* Adjust vertical alignment */
+      background-color: #f8d7da; /* Same background color as body */
+      padding-right: 10px; /* Space between number and text */
+      box-sizing: border-box; /* Include padding in element's total width and height */
+    }
+
+    .jspsych-content-wrapper {
+      display: flex;
+      margin: auto;
+      flex: 1 1 100%;
+      width: 100%;
+      margin-bottom: 5rem;
+    }
+    .video-title{
+      font-size: 30px;
+      font-weight: bold;
+    }
+
+    .jspsych-content {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="experiment-container">
+    <div class="custom-video-container" id="video-container">
+      <div class="video-container" id="jspsych-video-stimulus-container">
+        <!-- Video will be inserted here by jsPsych -->
+      </div>
+      <div class="button-container" id="jspsych-button-container">
+        <!-- Buttons will be inserted here by jsPsych -->
+      </div>
+    </div>
+  </div>
+  <script>
+    /* initialize jsPsych */
+    var jsPsych = initJsPsych();
+
+    /* create timeline */
+    var timeline = [];
+
+    /* preload video */
+    var preload = {
+      type: jsPsychPreload,
+      video: [
+      'video/ball_1.mp4'    , 'video/ball_2.mp4'    , 'video/ball_3.mp4'    , 'video/ball_4.mp4'  , 'video/ball_5.mp4'    , 'video/ball_6.mp4' 
+      , 'video/human_1.mp4' , 'video/human_2.mp4'   ,'video/human_3.mp4'  , 'video/human_4.mp4'   , 'video/human_5.mp4'   , 'video/human_6.mp4' 
+      , 'video/mammal_1.mp4' , 'video/mammal_2.mp4' , 'video/mammal_3.mp4' , 'video/mammal_4.mp4' , 'video/mammal_5.mp4' , 'video/mammal_6.mp4'
+      , 'video/penswi_1.mp4' , 'video/penswi_2.mp4' , 'video/penswi_3.mp4' , 'video/penswi_4.mp4' , 'video/penswi_5.mp4' , 'video/penswi_6.mp4' 
+      , 'video/reptile_1.mp4' , 'video/reptile_2.mp4' , 'video/reptile_3.mp4' , 'video/reptile_4.mp4' , 'video/reptile_5.mp4' , 'video/reptile_6.mp4'
+      , 'video/tool_1.mp4'  , 'video/tool_2.mp4' , 'video/tool_3.mp4' , 'video/tool_4.mp4' , 'video/tool_5.mp4' , 'video/tool_6.mp4' 
+    ]
+    };
+    timeline.push(preload);
+
+    /* define welcome message trial */
+    var welcome = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: `Welcome to the experiment. 
+      </h2><p><b>Please read the following instructions carefully </p></b>
+      <p>
+          <ol>
+              <li>Press any key to begin the experiment.</li>
+              <li>Watch the video presented on the right-hand side.</li>
+              <li>Select the most appropriate option from the list provided below the video.</li>
+              <li>The video will only play once, so please ensure you watch it attentively.</li>
+              <li>There are 36 videos, and you must choose an option for each video.</li>
+              <li>Wait for the video to end before choosing an option. You won't be able to click on an option before the video ends.</li>
+              <li>For optimal visualization, we recommend using a laptop, MacBook, or iPad.</li>
+              <li>The experiment may take 7-10 minutes, so please proceed patiently.</li>
+          </ol>    
+      </p>
+      <p>Press 'y' or 'Y' to start the experiment.</p>
+      `,
+      choices: ['y', 'Y']
+    };
+    timeline.push(welcome);
+
+    /* define fixation trial */
+    var fixation = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: '<div style="font-size:60px;">+</div>',
+      choices: "NO_KEYS",
+      trial_duration: 1000
+    };
+    var thankyou_message = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: '<div style="font-size:60px;"><center>Thankyou for your time !</center></div>',
+      choices: "NO_KEYS",
+      trial_duration: 1000
+    };
+
+    /* define video trials */
+    var videos = [
+      'video/ball_1.mp4'    , 'video/ball_2.mp4'    , 'video/ball_3.mp4'    , 'video/ball_4.mp4'  , 'video/ball_5.mp4'    , 'video/ball_6.mp4' 
+      , 'video/human_1.mp4' , 'video/human_2.mp4'   ,'video/human_3.mp4'  , 'video/human_4.mp4'   , 'video/human_5.mp4'   , 'video/human_6.mp4' 
+      , 'video/mammal_1.mp4' , 'video/mammal_2.mp4' , 'video/mammal_3.mp4' , 'video/mammal_4.mp4' , 'video/mammal_5.mp4' , 'video/mammal_6.mp4'
+      , 'video/penswi_1.mp4' , 'video/penswi_2.mp4' , 'video/penswi_3.mp4' , 'video/penswi_4.mp4' , 'video/penswi_5.mp4' , 'video/penswi_6.mp4' 
+      , 'video/reptile_1.mp4' , 'video/reptile_2.mp4' , 'video/reptile_3.mp4' , 'video/reptile_4.mp4' , 'video/reptile_5.mp4' , 'video/reptile_6.mp4'
+      , 'video/tool_1.mp4'  , 'video/tool_2.mp4' , 'video/tool_3.mp4' , 'video/tool_4.mp4' , 'video/tool_5.mp4' , 'video/tool_6.mp4' 
+    ];
+    var choices = ['ball' , 'human' , 'Swing/Pendulum' , 'mammal' , 'reptile' , 'tool'];
+    var videoCounter = 1;
+    videos.forEach(function(video) {
+      var video_title = {
+          type: jsPsychHtmlKeyboardResponse,
+          stimulus: `<div class="video-title"><b>Video ${videoCounter}</b></div>`,
+          choices: "NO_KEYS",
+          trial_duration: 1000
+        };
+      var video_trial = {
+        type: jsPsychVideoButtonResponse,
+        stimulus: [video],
+        choices: choices,
+        width: 500,
+        height: 500,
+        response_allowed_while_playing: false,
+        stimulus_container_id: 'jspsych-video-stimulus-container',
+        button_container_id: 'jspsych-button-container'
+      };
+      timeline.push(video_title);  // Add video title before each video trial
+      timeline.push(video_trial);
+      videoCounter++; 
+    });
+
+    /* start the experiment */
+    jsPsych.run(timeline);
+  </script>
+</body>
+</html>
